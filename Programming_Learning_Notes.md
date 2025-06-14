@@ -58,12 +58,16 @@
 - Started JavaScript fundamentals
 - Created practice files (js_fundamentals_practice.js and js_practice.html)
 - Learning about dynamic typing, template literals, arrow functions
+- Completed Exercise 1: Circle Area Calculator using arrow functions
+- Set up GitHub repository for tracking progress
 
 **Challenges faced:**
 - 
 
 **Next steps:**
-- Complete the 4 practice exercises in the JavaScript file
+- Complete Exercise 2: Create and loop through programming languages array
+- Complete Exercise 3: Create personal info object
+- Complete Exercise 4: Build simple calculator function
 - Run the code in browser and explore console output
 
 ---

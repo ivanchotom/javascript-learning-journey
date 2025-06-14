@@ -176,17 +176,60 @@ console.log("\n7. PRACTICE EXERCISES");
 console.log("=====================");
 
 // Exercise 1: Create a function that calculates area of circle
-// TODO: Write a function called circleArea that takes radius and returns area
-// Hint: area = π * r²
+// Solution:
+const circleArea = (radius) => {
+    const pi = 3.14159;
+    return pi * radius * radius;
+};
+
+// Test the circle area function
+console.log("\nExercise 1: Circle Area Calculator");
+console.log("----------------------------------");
+console.log("Area of circle with radius 5:", circleArea(5));
+console.log("Area of circle with radius 2.5:", circleArea(2.5));
 
 // Exercise 2: Create an array of your favorite programming languages
-// TODO: Create array and use a loop to print each language
+// TODO: Create an array called 'languages' with at least 3 programming languages you know or want to learn
+// TODO: Use a for...of loop to print each language with a message like "I know JavaScript" or "I want to learn Python"
+// Hint: Use template literals for the message: `I know ${language}`
 
 // Exercise 3: Create a person object with your info
 // TODO: Create object with name, age, favoriteLanguage properties
+let object_exercise_3 = {
+    name: "John",
+    age: 25,
+    favoriteLanguage: "C++",
+    isStudent: true
+};
+console.log("Exercise 3: Person object:", object_exercise_3);
 
 // Exercise 4: Write a simple calculator function
 // TODO: Function that takes two numbers and operation (+, -, *, /) and returns result
 
-console.log("\n🎯 Complete the TODOs above!");
+const calculator = (num1, num2, operation) => {
+    switch(operation) {
+        case '+':
+            return num1 + num2;
+        case '-':
+            return num1 - num2;
+        case '*':
+            return num1 * num2;
+        case '/':
+            if (num2 === 0) {
+                return "Error: Division by zero";
+            }
+            return num1 / num2;
+        default:
+            return "Invalid operation";
+    }
+};
+
+console.log("\nExercise 4: Simple Calculator");
+console.log("-------------------------");
+console.log("5 + 3 =", calculator(5, 3, '+'));
+console.log("10 / 2 =", calculator(10, 2, '/'));
+console.log("4 * 2 =", calculator(4, 2, '*'));
+console.log("10 - 3 =", calculator(10, 3, '-'));
+
+console.log("\n🎯 Complete the remaining exercises!");
 console.log("💡 Tip: Use console.log() to see your results"); 
