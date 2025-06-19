@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Advanced Color Flipper</title>
+        <style>
+            body {
+                background-color: #f11414;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                transition: background-color 0.5s ease;
+            }
+            .container {
+                text-align: center;
+                background-color: rgba(255, 255, 255, 0.9);
+                padding: 2rem;
+                border-radius: 15px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+                backdrop-filter: blur(10px);
+            }
+            .color {
+                font-size: 2rem;
+                margin: 1rem 0;
+                font-family: 'Courier New', monospace;
+                font-weight: bold;
+            }
+            .buttons {
+                display: flex;
+                gap: 1rem;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin-top: 1rem;
+            }
+            .button {
+                padding: 0.7rem 1.2rem;
+                font-size: 1rem;
+                cursor: pointer;
+                border: none;
+                border-radius: 25px;
+                color: white;
+                transition: all 0.3s ease;
+                font-weight: bold;
+            }
+            .hex-btn {
+                background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            }
+            .rgb-btn {
+                background: linear-gradient(45deg, #45B7D1, #96CEB4);
+            }
+            .random-btn {
+                background: linear-gradient(45deg, #DDA0DD, #F7DC6F);
+            }
+            .auto-btn {
+                background: linear-gradient(45deg, #FF9500, #FF5722);
+            }
+            .auto-btn.active {
+                background: linear-gradient(45deg, #4CAF50, #8BC34A);
+                animation: pulse 2s infinite;
+            }
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+            .button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+            .timer-controls {
+                margin-top: 1rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+            }
+            .speed-control {
+                padding: 0.3rem;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                font-size: 0.9rem;
+            }
+            .timer-info {
+                font-size: 0.9rem;
+                color: #666;
+                margin-top: 0.5rem;
+            }
+            .color-history {
+                margin-top: 1rem;
+                font-size: 0.9rem;
+                color: #666;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🎨 Advanced Color Flipper</h1>
+            <div class="color" id="color">
+                #000000
+            </div>
+            <div class="buttons">
+                <button class="button hex-btn" id="hex-btn">
+                    Hex Colors
+                </button>
+                <button class="button rgb-btn" id="rgb-btn">
+                    RGB Colors
+                </button>
+                <button class="button random-btn" id="random-btn">
+                    Random Color
+                </button>
+            </div>
+            
+            <div class="timer-controls">
+                <button class="button auto-btn" id="auto-btn">
+                    🔄 Auto Switch
+                </button>
+                <label for="speed">Speed:</label>
+                <select class="speed-control" id="speed">
+                    <option value="3000">Slow (3s)</option>
+                    <option value="1500" selected>Medium (1.5s)</option>
+                    <option value="800">Fast (0.8s)</option>
+                    <option value="400">Very Fast (0.4s)</option>
+                </select>
+            </div>
+            
+            <div class="timer-info" id="timer-info">
+                Auto-switch is OFF
+            </div>
+            
+            <div class="color-history" id="history">
+                Color History: 
+            </div>
+            
+            <script>
+                const hexBtn = document.getElementById('hex-btn');
+                const rgbBtn = document.getElementById('rgb-btn');
+                const randomBtn = document.getElementById('random-btn');
+                const autoBtn = document.getElementById('auto-btn');
+                const speedSelect = document.getElementById('speed');
+                const timerInfo = document.getElementById('timer-info');
+                const colorDisplay = document.getElementById('color');
+                const historyDisplay = document.getElementById('history');
+                const body = document.body;
+                
+                let colorHistory = [];
+                let autoSwitchInterval = null;
+                let isAutoSwitchOn = false;
+                let currentMode = 'random'; // 'hex', 'rgb', or 'random'
+
+                // Predefined hex colors
+                const hexColors = [
+                    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+                    '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+                    '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D2B4DE'
+                ];
+
+                // Function to generate random hex color
+                function getRandomHexColor() {
+                    const letters = '0123456789ABCDEF';
+                    let color = '#';
+                    for (let i = 0; i < 6; i++) {
+                        color += letters[Math.floor(Math.random() * 16)];
+                    }
+                    return color;
+                }
+
+                // Function to generate random RGB color
+                function getRandomRGBColor() {
+                    const r = Math.floor(Math.random() * 256);
+                    const g = Math.floor(Math.random() * 256);
+                    const b = Math.floor(Math.random() * 256);
+                    return `rgb(${r}, ${g}, ${b})`;
+                }
+
+                // Function to get predefined hex color
+                function getPredefinedHexColor() {
+                    const randomIndex = Math.floor(Math.random() * hexColors.length);
+                    return hexColors[randomIndex];
+                }
+
+                // Function to update color and history
+                function updateColor(newColor) {
+                    body.style.backgroundColor = newColor;
+                    colorDisplay.textContent = newColor;
+                    
+                    // Add to history (keep last 5)
+                    colorHistory.unshift(newColor);
+                    if (colorHistory.length > 5) {
+                        colorHistory.pop();
+                    }
+                    
+                    // Update history display
+                    historyDisplay.textContent = 'Last colors: ' + colorHistory.join(', ');
+                }
+
+                // Function to start auto-switching
+                function startAutoSwitch() {
+                    if (autoSwitchInterval) return; // Already running
+                    
+                    const speed = parseInt(speedSelect.value);
+                    autoSwitchInterval = setInterval(() => {
+                        let newColor;
+                        switch(currentMode) {
+                            case 'hex':
+                                newColor = getPredefinedHexColor();
+                                break;
+                            case 'rgb':
+                                newColor = getRandomRGBColor();
+                                break;
+                            default:
+                                newColor = getRandomHexColor();
+                        }
+                        updateColor(newColor);
+                    }, speed);
+                    
+                    isAutoSwitchOn = true;
+                    autoBtn.classList.add('active');
+                    autoBtn.textContent = '⏸️ Stop Auto';
+                    timerInfo.textContent = `Auto-switch is ON (${speed/1000}s intervals)`;
+                }
+
+                // Function to stop auto-switching
+                function stopAutoSwitch() {
+                    if (autoSwitchInterval) {
+                        clearInterval(autoSwitchInterval);
+                        autoSwitchInterval = null;
+                    }
+                    
+                    isAutoSwitchOn = false;
+                    autoBtn.classList.remove('active');
+                    autoBtn.textContent = '🔄 Auto Switch';
+                    timerInfo.textContent = 'Auto-switch is OFF';
+                }
+
+                // Function to restart auto-switch with new speed
+                function restartAutoSwitch() {
+                    if (isAutoSwitchOn) {
+                        stopAutoSwitch();
+                        startAutoSwitch();
+                    }
+                }
+
+                // Event listeners
+                hexBtn.addEventListener('click', () => {
+                    currentMode = 'hex';
+                    updateColor(getPredefinedHexColor());
+                });
+
+                rgbBtn.addEventListener('click', () => {
+                    currentMode = 'rgb';
+                    updateColor(getRandomRGBColor());
+                });
+
+                randomBtn.addEventListener('click', () => {
+                    currentMode = 'random';
+                    updateColor(getRandomHexColor());
+                });
+
+                autoBtn.addEventListener('click', () => {
+                    if (isAutoSwitchOn) {
+                        stopAutoSwitch();
+                    } else {
+                        startAutoSwitch();
+                    }
+                });
+
+                speedSelect.addEventListener('change', () => {
+                    restartAutoSwitch();
+                    if (isAutoSwitchOn) {
+                        const speed = parseInt(speedSelect.value);
+                        timerInfo.textContent = `Auto-switch is ON (${speed/1000}s intervals)`;
+                    }
+                });
+
+                // Set initial color
+                updateColor(getPredefinedHexColor());
+            </script>
+        </div>
+    </body>
+</html> 

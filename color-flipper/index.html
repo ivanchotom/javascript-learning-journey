@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Color Flipper</title>
+        <style>
+            body {
+                background-color: #f11414;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+            }
+            .container {
+                text-align: center;
+                background-color: rgb(255, 255, 255);
+                padding: 2rem;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(212, 13, 13, 0.1);
+            }
+            .color {
+                font-size: 2rem;
+                margin: 1rem 0;
+            }
+            .button {
+                padding: 0.5rem 1rem;
+                font-size: 1.2rem;
+                cursor: pointer;
+                border: none;
+                border-radius: 5px;
+                background-color: #45a049;
+                color: white;
+                transition: background-color 0.3s;
+            }
+            .button:hover {
+                background-color: #45a049;
+            }   
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Color Flipper</h1>
+            <div class="color" id="color">
+                #000000
+            </div>
+            <button class="button" id="button">
+                Click me
+            </button>
+            <script>
+                const button = document.getElementById('button');
+                const color = document.getElementById('color');
+                const body = document.body;
+
+                // Array of colors to choose from
+                const colors = [
+                    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+                    '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+                    '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D2B4DE'
+                ];
+
+                // Function to get random color from array
+                function getRandomColor() {
+                    const randomIndex = Math.floor(Math.random() * colors.length);
+                    return colors[randomIndex];
+                }
+
+                // Event listener for button click
+                button.addEventListener('click', function() {
+                    const randomColor = getRandomColor();
+                    
+                    // Change background color
+                    body.style.backgroundColor = randomColor;
+                    
+                    // Update color text display
+                    color.textContent = randomColor;
+                    
+                    // Optional: Add some visual feedback
+                    button.textContent = 'Click me again!';
+                    setTimeout(() => {
+                        button.textContent = 'Click me';
+                    }, 500);
+                });
+
+                // Set initial color
+                const initialColor = getRandomColor();
+                body.style.backgroundColor = initialColor;
+                color.textContent = initialColor;
+            </script>
+        </div>
+</html>
